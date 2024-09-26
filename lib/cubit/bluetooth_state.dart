@@ -2,7 +2,7 @@ part of 'bluetooth_cubit.dart';
 
 @immutable
 class Bluetooth_State {
-  final BluetoothAdapterState isBluetoothON;
+  final BluetoothAdapterState adapterBluetooth;
   final bool isScanning;
   final bool isConnected;
   final List<BluetoothDevice> systemDevices;
@@ -13,7 +13,7 @@ class Bluetooth_State {
   final BluetoothCharacteristic? characteristic;
 
   const Bluetooth_State({
-    required this.isBluetoothON,
+    required this.adapterBluetooth,
     required this.isScanning,
     required this.isConnected,
     required this.systemDevices,
@@ -25,7 +25,7 @@ class Bluetooth_State {
   });
 
   Bluetooth_State copyWith({
-    BluetoothAdapterState? isBluetoothON,
+    BluetoothAdapterState? adapterBluetooth,
     bool? isScanning,
     bool? isConnected,
     List<BluetoothDevice>? systemDevices,
@@ -36,7 +36,7 @@ class Bluetooth_State {
     BluetoothCharacteristic? characteristic,
   }) {
     return Bluetooth_State(
-      isBluetoothON: isBluetoothON ?? this.isBluetoothON,
+      adapterBluetooth: adapterBluetooth ?? this.adapterBluetooth,
       isScanning: isScanning ?? this.isScanning,
       isConnected: isConnected ?? this.isConnected,
       systemDevices: systemDevices ?? this.systemDevices,

@@ -14,7 +14,7 @@ void initBluetoothConnectionStream(
       if (state == BluetoothConnectionState.disconnected) {
         bluetoothCubit.disconnectDevice();
         if (context.mounted) {
-          showDisconnectConfirmation(
+          showDisconnectDialog(
             context,
             bluetoothCubit.disconnectDevice,
           );

@@ -36,8 +36,8 @@ class _BluetoothPageState extends State<BluetoothPage> {
               },
             ),
           ),
-          body: buildDeviceList(state),
-          floatingActionButton: buildScanButton(state),
+          body: DeviceList(state: state),
+          floatingActionButton: BluetoothScanButton(state: state),
         );
       },
     );

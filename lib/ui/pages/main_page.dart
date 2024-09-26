@@ -13,7 +13,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
-    MSG.DBG('Building YourScreen widget.');
     super.initState();
     initBluetoothConnectionStream(context, (subscription) {
       connectionSubscription = subscription;
@@ -61,7 +60,14 @@ class _MainPageState extends State<MainPage> {
             ? BluetoothDisconnectButton(
                 onConnect: () => showDisconnectConfirmation(
                   context,
-                  BlocProvider.of<BluetoothCubit>(context).disconnectDevice,
+                  () async {
+                    // Cancel the connection subscription
+                    await connectionSubscription?.cancel();
+                    // Disconnect the device
+                  },
+                  () {
+                    BlocProvider.of<BluetoothCubit>(context).disconnectDevice();
+                  },
                 ),
               )
             : BluetoothConnectButton(

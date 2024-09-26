@@ -4,3 +4,5 @@ import '../../cubit/cubit.dart';
 
 part 'sensor_column.dart';
 part 'bluetooth_button.dart';
+part 'scan_button.dart';
+part 'device_list.dart';

@@ -10,8 +10,8 @@ void showDisconnectDialog(BuildContext context, VoidCallback onConfirm) {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
               onConfirm();
+              Navigator.pop(context);
             },
             child: const Text('OK'),
           ),
@@ -22,7 +22,7 @@ void showDisconnectDialog(BuildContext context, VoidCallback onConfirm) {
 }
 
 void showDisconnectConfirmation(
-    BuildContext context, VoidCallback onDisconnect) {
+    BuildContext context, VoidCallback onConfirm, VoidCallback onDisconnect) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -38,8 +38,9 @@ void showDisconnectConfirmation(
           ),
           TextButton(
             onPressed: () {
-              onDisconnect();
               Navigator.of(context).pop();
+              onConfirm();
+              onDisconnect();
             },
             child: const Text('Disconnect'),
           ),
