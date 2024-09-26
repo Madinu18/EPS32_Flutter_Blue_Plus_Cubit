@@ -17,14 +17,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SI-SOIL',
       theme: ThemeData(
-          primarySwatch: Colors.blue,
-          brightness: Brightness.light,
-          appBarTheme: AppBarTheme(backgroundColor: blueColor),
-          textTheme: TextTheme(bodyLarge: blackTextFont)),
+        primarySwatch: Colors.blue,
+        brightness: Brightness.light,
+        appBarTheme: AppBarTheme(backgroundColor: blueColor),
+        textTheme: TextTheme(bodyLarge: blackTextFont),
+      ),
       home: MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => PageCubit()),
-          BlocProvider(create: (context) => BluetoothCubit()),
+          BlocProvider(
+            create: (context) =>
+                BluetoothCubit(context.read<PageCubit>()), // Inject PageCubit
+          ),
         ],
         child: const Wrapper(),
       ),

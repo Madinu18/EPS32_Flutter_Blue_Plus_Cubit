@@ -1,5 +1,4 @@
-// lib/utils/logger.dart
-import 'package:flutter/foundation.dart';
+part of 'utils.dart';
 
 class Logger {
   static void error(String message) {

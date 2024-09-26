@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'dart:async';
-import '../utils/logger.dart';
+import '../utils/utils.dart';
 
 part 'bluetooth_state.dart';
 
 class BluetoothCubit extends Cubit<Bluetooth_State> {
-  BluetoothCubit()
+  final PageCubit pageCubit;
+
+  BluetoothCubit(this.pageCubit)
       : super(const Bluetooth_State(
           adapterBluetooth: BluetoothAdapterState.unknown,
           isScanning: false,
@@ -102,6 +104,8 @@ class BluetoothCubit extends Cubit<Bluetooth_State> {
       }
     }
   }
+
+  BluetoothAdapterState get adapterState => state.adapterBluetooth;
 
   @override
   Future<void> close() {

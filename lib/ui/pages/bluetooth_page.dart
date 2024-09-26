@@ -11,7 +11,6 @@ class _BluetoothPageState extends State<BluetoothPage> {
   @override
   void initState() {
     super.initState();
-    // context.read<BluetoothCubit>().startScan();
   }
 
   @override
@@ -23,9 +22,15 @@ class _BluetoothPageState extends State<BluetoothPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<BluetoothCubit, Bluetooth_State>(
       builder: (context, state) {
-        if (state.adapterBluetooth != BluetoothAdapterState.on) {
+        // Periksa status Bluetooth hanya di BluetoothPage
+        if (state.adapterBluetooth == BluetoothAdapterState.on) {
+          // Jika Bluetooth menyala, navigasi ke BluetoothPage
+          context.read<PageCubit>().goToBluetoothPage();
+        } else {
+          // Jika Bluetooth mati, navigasi ke BluetoothOffScreen
           context.read<PageCubit>().goToBluetoothOffScreen();
         }
+
         return Scaffold(
           appBar: AppBar(
             title: const Text(
