@@ -6,7 +6,8 @@ void showDisconnectDialog(BuildContext context, VoidCallback onConfirm) {
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Text('Device Disconnected'),
-        content: const Text('The device has been disconnected.'),
+        content: const Text(
+            'The device has been disconnected. The stream has been stopped'),
         actions: [
           TextButton(
             onPressed: () {
@@ -28,7 +29,8 @@ void showDisconnectConfirmation(
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Text('Confirm Disconnect'),
-        content: const Text('Are you sure you want to disconnect the device?'),
+        content: const Text(
+            'Are you sure you want to disconnect the device? The stream will be stop.'),
         actions: [
           TextButton(
             onPressed: () {

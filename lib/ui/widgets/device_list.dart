@@ -26,7 +26,12 @@ class DeviceList extends StatelessWidget {
                   .read<BluetoothCubit>()
                   .connectToDevice(result.device, context);
             },
-            child: const Text("Connect"),
+            child: Text(
+              "Connect",
+              style: TextStyle(
+                color: blueColor,
+              ),
+            ),
           ),
         );
       },

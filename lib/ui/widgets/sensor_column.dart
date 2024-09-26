@@ -3,7 +3,7 @@ part of 'widgets.dart';
 class SensorColumn extends StatelessWidget {
   final String title;
   final String imagePath;
-  final Function(Map<String, dynamic>) dataBuilder;
+  final Function(SensorData) dataBuilder;
   final Stream<List<int>>? tempHumiStream;
 
   const SensorColumn({
@@ -14,21 +14,9 @@ class SensorColumn extends StatelessWidget {
     super.key,
   });
 
-  Map<String, dynamic> parseJsonData(String data) {
-    try {
-      return {
-        "temperature": double.parse(
-            RegExp(r'"temperature":(\d+)').firstMatch(data)?.group(1) ?? "NaN"),
-        "humidity": double.parse(
-            RegExp(r'"humidity":(\d+)').firstMatch(data)?.group(1) ?? "NaN"),
-      };
-    } catch (e) {
-      return {"temperature": "NaN", "humidity": "NaN"};
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final bluetoothCubit = BlocProvider.of<BluetoothCubit>(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -41,19 +29,24 @@ class SensorColumn extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(title, style: const TextStyle(fontSize: 16)),
-              StreamBuilder<List<int>>(
-                stream: tempHumiStream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final data = String.fromCharCodes(snapshot.data!);
-                    final decodedData = parseJsonData(data);
-                    return dataBuilder(decodedData);
-                  } else {
-                    return const Text("Loading...");
-                  }
-                },
-              ),
+              Text(title, style: blackTextFontTitle),
+              (bluetoothCubit.state.connectedDevice == null)
+                  ? Text(
+                      "Not Conected",
+                      style: blackTextFont,
+                    )
+                  : StreamBuilder<List<int>>(
+                      stream: tempHumiStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final data = String.fromCharCodes(snapshot.data!);
+                          final sensorData = SensorData.fromJson(data);
+                          return dataBuilder(sensorData);
+                        } else {
+                          return const Text("Loading...");
+                        }
+                      },
+                    ),
             ],
           ),
         ),

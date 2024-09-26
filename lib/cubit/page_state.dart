@@ -12,3 +12,7 @@ final class GoToMainPage extends PageState {
 final class GoToBluetoothPage extends PageState {
   GoToBluetoothPage();
 }
+
+final class GoToBluetoothOffScreen extends PageState {
+  GoToBluetoothOffScreen();
+}

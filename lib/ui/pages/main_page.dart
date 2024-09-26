@@ -43,14 +43,14 @@ class _MainPageState extends State<MainPage> {
                   imagePath: 'assets/images/temperature.png',
                   tempHumiStream: state.tempHumiStream,
                   dataBuilder: (data) {
-                    return Text("${data['temperature']} °C");
+                    return Text("${data.temperature} °C");
                   }),
               SensorColumn(
                   title: "Humidity",
                   imagePath: "assets/images/humidity.png",
                   tempHumiStream: state.tempHumiStream,
                   dataBuilder: (data) {
-                    return Text("${data['humidity']} %");
+                    return Text("${data.humidity} %");
                   }),
             ],
           ),
@@ -61,9 +61,7 @@ class _MainPageState extends State<MainPage> {
                 onConnect: () => showDisconnectConfirmation(
                   context,
                   () async {
-                    // Cancel the connection subscription
                     await connectionSubscription?.cancel();
-                    // Disconnect the device
                   },
                   () {
                     BlocProvider.of<BluetoothCubit>(context).disconnectDevice();

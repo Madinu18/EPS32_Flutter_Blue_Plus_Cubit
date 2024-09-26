@@ -13,4 +13,8 @@ class PageCubit extends Cubit<PageState> {
   void goToBluetoothPage() {
     emit(GoToBluetoothPage());
   }
+
+  void goToBluetoothOffScreen() {
+    emit(GoToBluetoothOffScreen());
+  }
 }

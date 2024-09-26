@@ -7,7 +7,7 @@ Color whiteColor = Color(0xFFfeffff);
 Color greenColor1 = Color(0xFF5DB075);
 Color greenColor2 = Color(0xFFE8F9E5);
 Color greenColor3 = Color(0xFF54D3AD);
-Color blueColor = Color(0xFF3272B8);
+Color blueColor = Color.fromARGB(255, 48, 133, 224);
 Color redColor = Color(0xffB8324C);
 
 //font theme

@@ -13,6 +13,8 @@ class Wrapper extends StatelessWidget {
           return const MainPage();
         } else if (state is GoToBluetoothPage) {
           return const BluetoothPage();
+        } else if (state is GoToBluetoothOffScreen) {
+          return const BluetoothOffScreen();
         } else {
           return Container();
         }
