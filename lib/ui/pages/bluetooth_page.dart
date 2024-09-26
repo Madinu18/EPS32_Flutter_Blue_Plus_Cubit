@@ -42,43 +42,4 @@ class _BluetoothPageState extends State<BluetoothPage> {
       },
     );
   }
-
-  Widget buildScanButton(Bluetooth_State state) {
-    return FloatingActionButton(
-      backgroundColor: state.isScanning ? Colors.red : Colors.blue,
-      onPressed: () {
-        state.isScanning
-            ? context.read<BluetoothCubit>().stopScan()
-            : context.read<BluetoothCubit>().startScan();
-      },
-      child: Text(state.isScanning ? "STOP" : "SCAN"),
-    );
-  }
-
-  Widget buildDeviceList(Bluetooth_State state) {
-    if (state.scanResults.isEmpty) {
-      return const Center(child: Text('No devices found'));
-    }
-
-    return ListView.separated(
-      separatorBuilder: (context, index) => const Divider(),
-      itemCount: state.scanResults.length,
-      itemBuilder: (context, index) {
-        final result = state.scanResults[index];
-        return ListTile(
-          title: Text(result.device.platformName.isNotEmpty
-              ? result.device.platformName
-              : "Unnamed Device"),
-          trailing: ElevatedButton(
-            onPressed: () {
-              context
-                  .read<BluetoothCubit>()
-                  .connectToDevice(result.device, context);
-            },
-            child: const Text("Connect"),
-          ),
-        );
-      },
-    );
-  }
 }
