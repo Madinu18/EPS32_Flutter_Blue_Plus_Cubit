@@ -19,6 +19,7 @@ class BluetoothCubit extends Cubit<Bluetooth_State> {
   StreamSubscription<List<ScanResult>>? _scanResultsSubscription;
   StreamSubscription<bool>? _isScanningSubscription;
   StreamSubscription<BluetoothAdapterState>? _adapterStateSubscription;
+  StreamSubscription<BluetoothConnectionState>? connectionSubscription;
 
   Future<void> startScan() async {
     emit(state.copyWith(isScanning: true));

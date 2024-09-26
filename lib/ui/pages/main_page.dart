@@ -189,14 +189,20 @@ class _MainPageState extends State<MainPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildSensorColumn("Temperature", 'assets/images/temperature.png',
-                  (data) {
-                return Text("${data['temperature']} °C");
-              }),
-              _buildSensorColumn("Humidity", "assets/images/humidity.png",
-                  (data) {
-                return Text("${data['humidity']} %");
-              }),
+              SensorColumn(
+                  title: "Temperature",
+                  imagePath: 'assets/images/temperature.png',
+                  tempHumiStream: state.tempHumiStream,
+                  dataBuilder: (data) {
+                    return Text("${data['temperature']} °C");
+                  }),
+              SensorColumn(
+                  title: "Humidity",
+                  imagePath: "assets/images/humidity.png",
+                  tempHumiStream: state.tempHumiStream,
+                  dataBuilder: (data) {
+                    return Text("${data['humidity']} %");
+                  }),
             ],
           ),
         ),

@@ -25,14 +25,14 @@ class _BluetoothPageState extends State<BluetoothPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Scanning Bluetooth",
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            title: const Text(
+              "Scanning Bluetooth",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
-                context
-                    .read<PageCubit>()
-                    .goToMainPage(); // Go back to the previous page
+                context.read<PageCubit>().goToMainPage();
               },
             ),
           ),
@@ -47,38 +47,38 @@ class _BluetoothPageState extends State<BluetoothPage> {
     return FloatingActionButton(
       backgroundColor: state.isScanning ? Colors.red : Colors.blue,
       onPressed: () {
-        if (state.isScanning) {
-          context.read<BluetoothCubit>().stopScan();
-        } else {
-          context.read<BluetoothCubit>().startScan();
-        }
+        state.isScanning
+            ? context.read<BluetoothCubit>().stopScan()
+            : context.read<BluetoothCubit>().startScan();
       },
       child: Text(state.isScanning ? "STOP" : "SCAN"),
     );
   }
 
   Widget buildDeviceList(Bluetooth_State state) {
-    return state.scanResults.isEmpty
-        ? const Center(child: Text('No devices found'))
-        : ListView.separated(
-            separatorBuilder: (context, index) => const Divider(),
-            itemCount: state.scanResults.length,
-            itemBuilder: (context, index) {
-              final result = state.scanResults[index];
-              return ListTile(
-                title: Text(result.device.platformName.isNotEmpty
-                    ? result.device.platformName
-                    : "Unnamed Device"),
-                trailing: ElevatedButton(
-                  onPressed: () {
-                    context
-                        .read<BluetoothCubit>()
-                        .connectToDevice(result.device, context);
-                  },
-                  child: const Text("Connect"),
-                ),
-              );
+    if (state.scanResults.isEmpty) {
+      return const Center(child: Text('No devices found'));
+    }
+
+    return ListView.separated(
+      separatorBuilder: (context, index) => const Divider(),
+      itemCount: state.scanResults.length,
+      itemBuilder: (context, index) {
+        final result = state.scanResults[index];
+        return ListTile(
+          title: Text(result.device.platformName.isNotEmpty
+              ? result.device.platformName
+              : "Unnamed Device"),
+          trailing: ElevatedButton(
+            onPressed: () {
+              context
+                  .read<BluetoothCubit>()
+                  .connectToDevice(result.device, context);
             },
-          );
+            child: const Text("Connect"),
+          ),
+        );
+      },
+    );
   }
 }
