@@ -87,8 +87,9 @@ class BluetoothCubit extends Cubit<Bluetooth_State> {
             Stream<List<int>> tempHumiStream = char.onValueReceived;
 
             // Pindah ke halaman utama (jika diperlukan)
-            BlocProvider.of<PageCubit>(context).goToMainPage();
-
+            if (context.mounted) {
+              BlocProvider.of<PageCubit>(context).goToMainPage();
+            }
             // Emit state baru dengan status terhubung, karakteristik, dan stream
             emit(state.copyWith(
               isConnected: true,

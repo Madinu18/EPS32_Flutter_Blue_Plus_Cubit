@@ -82,18 +82,8 @@ class _MainPageState extends State<MainPage> {
         width: 200.0,
         height: 60.0,
         child: FloatingActionButton(
-          onPressed: () async {
-            if (state.isBluetoothON != BluetoothAdapterState.on) {
-              context.read<PageCubit>().goToBluetoothPage();
-            } else {
-              try {
-                if (Platform.isAndroid) {
-                  await FlutterBluePlus.turnOn();
-                }
-              } catch (e) {
-                print("Turning On Bluetooth Error: $e");
-              }
-            }
+          onPressed: () {
+            context.read<PageCubit>().goToBluetoothPage();
           },
           backgroundColor: Colors.blue,
           tooltip: 'Connect to a device',
@@ -208,8 +198,17 @@ class _MainPageState extends State<MainPage> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: state.isConnected
-            ? buildBluetoothDisconnectButton(context)
-            : buildBluetoothConnectButton(context),
+            ? BluetoothDisconnectButton(
+                onConnect: () => showDisconnectConfirmation(
+                  context,
+                  BlocProvider.of<BluetoothCubit>(context).disconnectDevice,
+                ),
+              )
+            : BluetoothConnectButton(
+                onDisconnect: () {
+                  BlocProvider.of<PageCubit>(context).goToBluetoothPage();
+                },
+              ),
       );
     });
   }

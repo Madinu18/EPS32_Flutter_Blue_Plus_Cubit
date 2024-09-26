@@ -3,8 +3,7 @@ part of 'widgets.dart';
 class BluetoothConnectButton extends StatelessWidget {
   final VoidCallback onDisconnect;
 
-  const BluetoothConnectButton({required this.onDisconnect, Key? key})
-      : super(key: key);
+  const BluetoothConnectButton({required this.onDisconnect, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,18 +14,7 @@ class BluetoothConnectButton extends StatelessWidget {
         height: 60.0,
         child: FloatingActionButton(
           onPressed: () async {
-            if (state.isBluetoothON != BluetoothAdapterState.on) {
-              onDisconnect();
-              //context.read<PageCubit>().goToBluetoothPage();
-            } else {
-              try {
-                if (Platform.isAndroid) {
-                  await FlutterBluePlus.turnOn();
-                }
-              } catch (e) {
-                print("Turning On Bluetooth Error: $e");
-              }
-            }
+            onDisconnect();
           },
           backgroundColor: Colors.blue,
           tooltip: 'Connect to a device',
@@ -40,8 +28,7 @@ class BluetoothConnectButton extends StatelessWidget {
 class BluetoothDisconnectButton extends StatelessWidget {
   final VoidCallback onConnect;
 
-  const BluetoothDisconnectButton({required this.onConnect, Key? key})
-      : super(key: key);
+  const BluetoothDisconnectButton({required this.onConnect, super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -20,7 +20,7 @@ class SensorColumn extends StatelessWidget {
         "temperature": double.parse(
             RegExp(r'"temperature":(\d+)').firstMatch(data)?.group(1) ?? "NaN"),
         "humidity": double.parse(
-            RegExp(r'"Humidity":(\d+)').firstMatch(data)?.group(1) ?? "NaN"),
+            RegExp(r'"humidity":(\d+)').firstMatch(data)?.group(1) ?? "NaN"),
       };
     } catch (e) {
       return {"temperature": "NaN", "humidity": "NaN"};
