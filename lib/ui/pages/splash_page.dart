@@ -9,21 +9,19 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   startSplashScreen() async {
-    await Future.delayed(Duration(seconds: 2), () async {
+    await Future.delayed(const Duration(seconds: 2), () async {
       context.read<PageCubit>().goToMainPage();
     });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     startSplashScreen();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -39,7 +37,7 @@ class _SplashPageState extends State<SplashPage> {
               width: 150,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("assets/images/si-soil.png"),
+                  image: const AssetImage("assets/images/si-soil.png"),
                   fit: BoxFit.contain,
                   colorFilter: ColorFilter.mode(
                     scaffoldBgColor.withOpacity(0.8),
@@ -62,7 +60,7 @@ class _SplashPageState extends State<SplashPage> {
                   width: 100,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage("assets/images/support-by.png"),
+                      image: const AssetImage("assets/images/support-by.png"),
                       fit: BoxFit.contain,
                       colorFilter: ColorFilter.mode(
                         scaffoldBgColor.withOpacity(0.8),

@@ -11,8 +11,8 @@ class SensorColumn extends StatelessWidget {
     required this.imagePath,
     required this.dataBuilder,
     this.tempHumiStream,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   Map<String, dynamic> parseJsonData(String data) {
     try {

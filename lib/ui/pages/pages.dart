@@ -8,6 +8,7 @@ import '../../cubit/cubit.dart';
 import '../../functions/functions.dart';
 import '../../shared/shared.dart';
 import '../widgets/widgets.dart';
+import '../../utils/logger.dart';
 
 part 'wrapper.dart';
 part 'splash_page.dart';

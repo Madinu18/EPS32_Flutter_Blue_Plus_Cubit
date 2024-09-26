@@ -9,9 +9,11 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   StreamSubscription<BluetoothConnectionState>? connectionSubscription;
+  final Logger logger = Logger();
 
   @override
   void initState() {
+    MSG.DBG('Building YourScreen widget.');
     super.initState();
     initBluetoothConnectionStream(context, (subscription) {
       connectionSubscription = subscription;
