@@ -1,6 +1,6 @@
 part of 'functions.dart';
 
-void showDisconnectDialog(BuildContext context, VoidCallback onConfirm) {
+void showDisconnectDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -11,7 +11,6 @@ void showDisconnectDialog(BuildContext context, VoidCallback onConfirm) {
         actions: [
           TextButton(
             onPressed: () {
-              onConfirm();
               Navigator.pop(context);
             },
             child: const Text('OK'),
@@ -23,7 +22,7 @@ void showDisconnectDialog(BuildContext context, VoidCallback onConfirm) {
 }
 
 void showDisconnectConfirmation(
-    BuildContext context, VoidCallback onConfirm, VoidCallback onDisconnect) {
+    BuildContext context, VoidCallback onDisconnect) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -41,7 +40,6 @@ void showDisconnectConfirmation(
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              onConfirm();
               onDisconnect();
             },
             child: const Text('Disconnect'),

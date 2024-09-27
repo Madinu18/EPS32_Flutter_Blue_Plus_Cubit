@@ -1,7 +1,9 @@
 part of 'pages.dart';
 
 class BluetoothOffScreen extends StatelessWidget {
-  const BluetoothOffScreen({super.key});
+  const BluetoothOffScreen({super.key, this.adapterState});
+
+  final BluetoothAdapterState? adapterState;
 
   Widget buildBluetoothOffIcon(BuildContext context) {
     return const Icon(
@@ -11,10 +13,10 @@ class BluetoothOffScreen extends StatelessWidget {
     );
   }
 
-  Widget buildTitle(BuildContext context, BluetoothAdapterState adapterState) {
-    String state = adapterState.toString().split(".").last;
+  Widget buildTitle(BuildContext context) {
+    String? state = adapterState?.toString().split(".").last;
     return Text(
-      'Bluetooth Adapter is $state',
+      'Bluetooth Adapter is ${state ?? 'not available'}',
       style: Theme.of(context)
           .primaryTextTheme
           .titleSmall
@@ -31,7 +33,6 @@ class BluetoothOffScreen extends StatelessWidget {
           try {
             if (Platform.isAndroid) {
               await FlutterBluePlus.turnOn();
-              BlocProvider.of<PageCubit>(context).goToBluetoothPage();
             }
           } catch (e) {
             MSG.ERR("Error Turning On: $e");
@@ -43,19 +44,18 @@ class BluetoothOffScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final adapterState =
-        context.read<BluetoothCubit>().adapterState; // Ambil adapter state
-
-    return Scaffold(
-      backgroundColor: Colors.lightBlue,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            buildBluetoothOffIcon(context),
-            buildTitle(context, adapterState), // Pass adapterState
-            if (Platform.isAndroid) buildTurnOnButton(context),
-          ],
+    return ScaffoldMessenger(
+      child: Scaffold(
+        backgroundColor: Colors.lightBlue,
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              buildBluetoothOffIcon(context),
+              buildTitle(context),
+              if (Platform.isAndroid) buildTurnOnButton(context),
+            ],
+          ),
         ),
       ),
     );

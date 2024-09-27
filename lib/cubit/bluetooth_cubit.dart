@@ -1,117 +1,91 @@
-import 'package:flutter_application_1/cubit/page_cubit.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'dart:async';
-import '../utils/utils.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_application_1/utils/utils.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import '../functions/functions.dart';
+import '../shared/shared.dart';
+import 'page_cubit.dart';
 
 part 'bluetooth_state.dart';
 
 class BluetoothCubit extends Cubit<Bluetooth_State> {
-  final PageCubit pageCubit;
+  BluetoothCubit() : super(BluetoothStateInitial());
 
-  BluetoothCubit(this.pageCubit)
-      : super(const Bluetooth_State(
-          adapterBluetooth: BluetoothAdapterState.unknown,
-          isScanning: false,
-          isConnected: false,
-          scanResults: [],
-          systemDevices: [],
-        )) {
-    _adapterStateSubscription =
-        FlutterBluePlus.adapterState.listen((adapterState) {
-      emit(state.copyWith(adapterBluetooth: adapterState));
-      MSG.DBG("Adapter State Changed: $adapterState");
-    });
-  }
-
-  StreamSubscription<List<ScanResult>>? _scanResultsSubscription;
-  StreamSubscription<bool>? _isScanningSubscription;
-  StreamSubscription<BluetoothAdapterState>? _adapterStateSubscription;
   StreamSubscription<BluetoothConnectionState>? connectionSubscription;
 
-  Future<void> startScan() async {
-    emit(state.copyWith(isScanning: true));
+  StreamSubscription<List<ScanResult>>? subscription;
+  StreamSubscription<bool>? _isScanningSubscription;
 
+  Future<void> connectToDevice(BluetoothDevice device, BuildContext context) async {
+    emit(BluetoothLoading());
     try {
-      List<BluetoothDevice> systemDevices = await FlutterBluePlus.systemDevices;
-      emit(state.copyWith(systemDevices: systemDevices));
-
-      _scanResultsSubscription = FlutterBluePlus.scanResults.listen((results) {
-        emit(state.copyWith(scanResults: results));
-      });
-
-      _isScanningSubscription = FlutterBluePlus.isScanning.listen((isScanning) {
-        emit(state.copyWith(isScanning: isScanning));
-      });
-
-      await FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
-    } catch (e) {
-      MSG.ERR("Error: $e");
-      stopScan();
-    }
-  }
-
-  Future<void> stopScan() async {
-    try {
-      await FlutterBluePlus.stopScan();
-      emit(state.copyWith(isScanning: false));
-    } catch (e) {
-      MSG.ERR("Stop Scan Error: $e");
-    }
-  }
-
-  Future<void> connectToDevice(
-      BluetoothDevice device, BuildContext context) async {
-    try {
-      await device.connect();
-
-      List<BluetoothService> services = await device.discoverServices();
-
-      emit(state.copyWith(connectedDevice: device, services: services));
-
-      for (var service in services) {
-        for (var char in service.characteristics) {
-          if (char.uuid.toString() == "beb5483e-36e1-4688-b7f5-ea07361b26a8") {
-            await char.setNotifyValue(true);
-
-            Stream<List<int>> tempHumiStream = char.onValueReceived;
-
-            if (context.mounted) {
-              BlocProvider.of<PageCubit>(context).goToMainPage();
-            }
-
-            emit(state.copyWith(
-              isConnected: true,
-              characteristic: char,
-              tempHumiStream: tempHumiStream,
-            ));
-          }
+      connectedToDevice = await BluetoothFunction().connectToDevice(device);
+      if (connectedToDevice) {
+        await bluetoothChar?.setNotifyValue(true);
+        connectedDevice = device;
+        tempHumiValue = bluetoothChar?.onValueReceived;
+        streamConnection();
+        if(context.mounted){
+          BlocProvider.of<PageCubit>(context).goToMainPage();
         }
       }
     } catch (e) {
-      MSG.ERR("Connect Error: $e");
+      MSG.ERR("Error: $e");
     }
   }
 
-  Future<void> disconnectDevice() async {
-    if (state.connectedDevice != null) {
-      try {
-        await state.connectedDevice!.disconnect();
-        emit(state.copyWith(isConnected: false, connectedDevice: null));
-      } catch (e) {
-        MSG.ERR("Failed to disconnect: $e");
+  void streamConnection() {
+    connectionSubscription = connectedDevice!.connectionState
+        .listen((BluetoothConnectionState state) {
+      if (state == BluetoothConnectionState.disconnected) {
+        emit(BluetoothDisconnectDialog());
+        bluetoothChar?.setNotifyValue(false);
       }
+    });
+  }
+
+  Future<void> disconnectDevice(BluetoothDevice device) async {
+    emit(BluetoothLoading());
+    try {
+      await connectionSubscription?.cancel();
+      await BluetoothFunction().disconnectDevice(device);
+    } catch (e) {
+      MSG.ERR("Disconect Failed Error: $e");
     }
   }
 
-  BluetoothAdapterState get adapterState => state.adapterBluetooth;
+  Future<void> scanDevice() async {
+    try {
+      MSG.DBG("Start scanning");
 
-  @override
-  Future<void> close() {
-    _adapterStateSubscription?.cancel();
-    _scanResultsSubscription?.cancel();
-    _isScanningSubscription?.cancel();
-    return super.close();
+      // Mulai scan dan dengarkan hasil scan
+      await FlutterBluePlus.startScan(timeout: const Duration(seconds: scanTimeinSecond));
+      subscription = FlutterBluePlus.scanResults.listen((results) {
+        emit(BluetoothDeviceScanResults(results)); // Emit hasil scan
+      });
+      _isScanningSubscription = FlutterBluePlus.isScanning.listen((isScanning) {
+        emit(BluetoothScaning(isScanning));
+        MSG.DBG(isScanning.toString());
+      });
+
+      await Future.delayed(const Duration(seconds: scanTimeinSecond));
+    } catch (e) {
+      MSG.ERR("Error during scan: $e");
+      emit(BluetoothScaning(false));
+    }
+  }
+
+  Future<void> stopScanDevice() async {
+    try {
+      await FlutterBluePlus.stopScan();
+      subscription?.cancel();
+      _isScanningSubscription?.cancel();
+      emit(BluetoothScaning(false)); // Set state ke scanning false
+      MSG.DBG("Scanning stopped");
+    } catch (e) {
+      MSG.ERR("Stop Scan Error: $e");
+    }
   }
 }

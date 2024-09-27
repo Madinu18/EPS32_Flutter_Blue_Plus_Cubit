@@ -1,20 +1,20 @@
 part of 'widgets.dart';
 
 class BluetoothScanButton extends StatelessWidget {
-  final Bluetooth_State state;
+  final bool isScanning;
 
-  const BluetoothScanButton({required this.state, super.key});
+  const BluetoothScanButton({required this.isScanning, super.key});
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      backgroundColor: state.isScanning ? Colors.red : Colors.blue,
+      backgroundColor: isScanning ? Colors.red : Colors.blue,
       onPressed: () {
-        state.isScanning
-            ? context.read<BluetoothCubit>().stopScan()
-            : context.read<BluetoothCubit>().startScan();
+        isScanning
+            ? context.read<BluetoothCubit>().stopScanDevice()
+            : context.read<BluetoothCubit>().scanDevice();
       },
-      child: Text(state.isScanning ? "STOP" : "SCAN"),
+      child: Text(isScanning ? "STOP" : "SCAN"),
     );
   }
 }

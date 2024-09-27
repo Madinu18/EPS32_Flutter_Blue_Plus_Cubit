@@ -1,50 +1,28 @@
 part of 'bluetooth_cubit.dart';
 
 @immutable
-class Bluetooth_State {
-  final BluetoothAdapterState adapterBluetooth;
-  final bool isScanning;
-  final bool isConnected;
-  final List<BluetoothDevice> systemDevices;
-  final List<ScanResult> scanResults;
-  final BluetoothDevice? connectedDevice;
-  final List<BluetoothService>? services;
-  final Stream<List<int>>? tempHumiStream;
-  final BluetoothCharacteristic? characteristic;
-
-  const Bluetooth_State({
-    required this.adapterBluetooth,
-    required this.isScanning,
-    required this.isConnected,
-    required this.systemDevices,
-    required this.scanResults,
-    this.connectedDevice,
-    this.services,
-    this.tempHumiStream,
-    this.characteristic,
-  });
-
-  Bluetooth_State copyWith({
-    BluetoothAdapterState? adapterBluetooth,
-    bool? isScanning,
-    bool? isConnected,
-    List<BluetoothDevice>? systemDevices,
-    List<ScanResult>? scanResults,
-    BluetoothDevice? connectedDevice,
-    List<BluetoothService>? services,
-    Stream<List<int>>? tempHumiStream,
-    BluetoothCharacteristic? characteristic,
-  }) {
-    return Bluetooth_State(
-      adapterBluetooth: adapterBluetooth ?? this.adapterBluetooth,
-      isScanning: isScanning ?? this.isScanning,
-      isConnected: isConnected ?? this.isConnected,
-      systemDevices: systemDevices ?? this.systemDevices,
-      scanResults: scanResults ?? this.scanResults,
-      connectedDevice: connectedDevice ?? this.connectedDevice,
-      services: services ?? this.services,
-      tempHumiStream: tempHumiStream ?? this.tempHumiStream,
-      characteristic: characteristic ?? this.characteristic,
-    );
-  }
+abstract class Bluetooth_State {
 }
+
+class BluetoothStateInitial extends Bluetooth_State {}
+
+class BluetoothLoading extends Bluetooth_State {}
+
+class BluetoothScaning extends Bluetooth_State {
+  final bool isScanning;
+
+  BluetoothScaning(this.isScanning);
+
+  List<Object> get props => [isScanning];
+}
+
+class BluetoothDeviceScanResults extends Bluetooth_State {
+  final List<ScanResult>? scanResults;
+
+  BluetoothDeviceScanResults(this.scanResults);
+
+  List<Object> get props => [scanResults ?? []];
+}
+
+class BluetoothDisconnectDialog extends Bluetooth_State {}
+

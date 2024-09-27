@@ -16,7 +16,6 @@ class SensorColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bluetoothCubit = BlocProvider.of<BluetoothCubit>(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -30,7 +29,7 @@ class SensorColumn extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(title, style: blackTextFontTitle),
-              (bluetoothCubit.state.connectedDevice == null)
+              (connectedDevice == null)
                   ? Text(
                       "Not Conected",
                       style: blackTextFont,

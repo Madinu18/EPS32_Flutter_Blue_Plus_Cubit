@@ -14,9 +14,6 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    initBluetoothConnectionStream(context, (subscription) {
-      connectionSubscription = subscription;
-    });
   }
 
   @override
@@ -41,14 +38,14 @@ class _MainPageState extends State<MainPage> {
               SensorColumn(
                   title: "Temperature",
                   imagePath: 'assets/images/temperature.png',
-                  tempHumiStream: state.tempHumiStream,
+                  tempHumiStream: tempHumiValue,
                   dataBuilder: (data) {
                     return Text("${data.temperature} °C");
                   }),
               SensorColumn(
                   title: "Humidity",
                   imagePath: "assets/images/humidity.png",
-                  tempHumiStream: state.tempHumiStream,
+                  tempHumiStream: tempHumiValue,
                   dataBuilder: (data) {
                     return Text("${data.humidity} %");
                   }),
@@ -56,15 +53,12 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: state.isConnected
+        floatingActionButton: connectedToDevice
             ? BluetoothDisconnectButton(
                 onConnect: () => showDisconnectConfirmation(
                   context,
-                  () async {
-                    await connectionSubscription?.cancel();
-                  },
                   () {
-                    BlocProvider.of<BluetoothCubit>(context).disconnectDevice();
+                    BlocProvider.of<BluetoothCubit>(context).disconnectDevice(connectedDevice!);
                   },
                 ),
               )

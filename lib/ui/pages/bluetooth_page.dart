@@ -8,9 +8,12 @@ class BluetoothPage extends StatefulWidget {
 }
 
 class _BluetoothPageState extends State<BluetoothPage> {
+  bool isScanning = false;
+
   @override
   void initState() {
     super.initState();
+    // context.read<BluetoothCubit>().scanDevice();
   }
 
   @override
@@ -20,34 +23,34 @@ class _BluetoothPageState extends State<BluetoothPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BluetoothCubit, Bluetooth_State>(
-      builder: (context, state) {
-        // Periksa status Bluetooth hanya di BluetoothPage
-        if (state.adapterBluetooth == BluetoothAdapterState.on) {
-          // Jika Bluetooth menyala, navigasi ke BluetoothPage
-          context.read<PageCubit>().goToBluetoothPage();
-        } else {
-          // Jika Bluetooth mati, navigasi ke BluetoothOffScreen
-          context.read<PageCubit>().goToBluetoothOffScreen();
+    return BlocListener<BluetoothCubit, Bluetooth_State>(
+      listener: (context, state) {
+        if (state is BluetoothScaning) {
+          setState(() {
+            isScanning = state.isScanning;
+          });
         }
-
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              "Scanning Bluetooth",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                context.read<PageCubit>().goToMainPage();
-              },
-            ),
-          ),
-          body: DeviceList(state: state),
-          floatingActionButton: BluetoothScanButton(state: state),
-        );
       },
+      child: BlocBuilder<BluetoothCubit, Bluetooth_State>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text(
+                "Scanning Bluetooth",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  context.read<PageCubit>().goToMainPage();
+                },
+              ),
+            ),
+            body: DeviceList(state: state),
+            floatingActionButton: BluetoothScanButton(isScanning: isScanning),
+          );
+        },
+      ),
     );
   }
 }
