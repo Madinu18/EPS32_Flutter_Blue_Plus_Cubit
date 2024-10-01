@@ -1,9 +1,28 @@
 part of 'pages.dart';
 
-class BluetoothOffScreen extends StatelessWidget {
+class BluetoothOffScreen extends StatefulWidget {
   const BluetoothOffScreen({super.key, this.adapterState});
 
   final BluetoothAdapterState? adapterState;
+
+  @override
+  _BluetoothOffScreenState createState() => _BluetoothOffScreenState();
+}
+
+class _BluetoothOffScreenState extends State<BluetoothOffScreen> {
+  StreamSubscription? adapterSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<BluetoothCubit>(context).streamAdapter();
+  }
+
+  @override
+  void dispose() {
+    adapterSubscription?.cancel();
+    super.dispose();
+  }
 
   Widget buildBluetoothOffIcon(BuildContext context) {
     return const Icon(
@@ -13,22 +32,11 @@ class BluetoothOffScreen extends StatelessWidget {
     );
   }
 
-  Widget buildTitle(BuildContext context) {
-    String? state = adapterState?.toString().split(".").last;
-    return Text(
-      'Bluetooth Adapter is ${state ?? 'not available'}',
-      style: Theme.of(context)
-          .primaryTextTheme
-          .titleSmall
-          ?.copyWith(color: Colors.white),
-    );
-  }
-
   Widget buildTurnOnButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: ElevatedButton(
-        child: const Text('TURN ON'),
+        child: const Text('TURN ON', style: TextStyle(color: Colors.blue),),
         onPressed: () async {
           try {
             if (Platform.isAndroid) {
@@ -44,7 +52,14 @@ class BluetoothOffScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldMessenger(
+    return BlocListener<BluetoothCubit, Bluetooth_State>(
+      listener: (context, state) {
+        if (state is AdapterState) {
+          if (state.adapterON) {
+            BlocProvider.of<PageCubit>(context).goToBluetoothPage();
+          }
+        }
+      },
       child: Scaffold(
         backgroundColor: Colors.lightBlue,
         body: Center(
@@ -52,7 +67,6 @@ class BluetoothOffScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               buildBluetoothOffIcon(context),
-              buildTitle(context),
               if (Platform.isAndroid) buildTurnOnButton(context),
             ],
           ),

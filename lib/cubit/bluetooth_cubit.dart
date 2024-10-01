@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import '../functions/functions.dart';
 import '../shared/shared.dart';
-import 'page_cubit.dart';
 
 part 'bluetooth_state.dart';
 
@@ -18,7 +17,10 @@ class BluetoothCubit extends Cubit<Bluetooth_State> {
   StreamSubscription<List<ScanResult>>? subscription;
   StreamSubscription<bool>? _isScanningSubscription;
 
-  Future<void> connectToDevice(BluetoothDevice device, BuildContext context) async {
+  List<ScanResult> _scanResults = [];
+
+  Future<void> connectToDevice(
+      BluetoothDevice device, BuildContext context) async {
     emit(BluetoothLoading());
     try {
       connectedToDevice = await BluetoothFunction().connectToDevice(device);
@@ -27,12 +29,11 @@ class BluetoothCubit extends Cubit<Bluetooth_State> {
         connectedDevice = device;
         tempHumiValue = bluetoothChar?.onValueReceived;
         streamConnection();
-        if(context.mounted){
-          BlocProvider.of<PageCubit>(context).goToMainPage();
-        }
+        emit(Connected(true));
       }
     } catch (e) {
       MSG.ERR("Error: $e");
+      emit(Connected(false));
     }
   }
 
@@ -40,17 +41,19 @@ class BluetoothCubit extends Cubit<Bluetooth_State> {
     connectionSubscription = connectedDevice!.connectionState
         .listen((BluetoothConnectionState state) {
       if (state == BluetoothConnectionState.disconnected) {
+        MSG.DBG("disconect dari ble");
         emit(BluetoothDisconnectDialog());
         bluetoothChar?.setNotifyValue(false);
+        // emit(Connected(false));
       }
     });
   }
 
   Future<void> disconnectDevice(BluetoothDevice device) async {
-    emit(BluetoothLoading());
     try {
       await connectionSubscription?.cancel();
       await BluetoothFunction().disconnectDevice(device);
+      emit(Connected(false));
     } catch (e) {
       MSG.ERR("Disconect Failed Error: $e");
     }
@@ -60,10 +63,11 @@ class BluetoothCubit extends Cubit<Bluetooth_State> {
     try {
       MSG.DBG("Start scanning");
 
-      // Mulai scan dan dengarkan hasil scan
-      await FlutterBluePlus.startScan(timeout: const Duration(seconds: scanTimeinSecond));
+      await FlutterBluePlus.startScan(
+        timeout: const Duration(seconds: scanTimeinSecond));
       subscription = FlutterBluePlus.scanResults.listen((results) {
-        emit(BluetoothDeviceScanResults(results)); // Emit hasil scan
+        _scanResults = results;
+        emit(BluetoothDeviceScanResults(_scanResults));
       });
       _isScanningSubscription = FlutterBluePlus.isScanning.listen((isScanning) {
         emit(BluetoothScaning(isScanning));
@@ -82,10 +86,20 @@ class BluetoothCubit extends Cubit<Bluetooth_State> {
       await FlutterBluePlus.stopScan();
       subscription?.cancel();
       _isScanningSubscription?.cancel();
-      emit(BluetoothScaning(false)); // Set state ke scanning false
+      emit(BluetoothScaning(false));
       MSG.DBG("Scanning stopped");
     } catch (e) {
       MSG.ERR("Stop Scan Error: $e");
     }
+  }
+
+  Future<void> streamAdapter() async {
+   adapterSubscription = FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {
+    if (state == BluetoothAdapterState.on) {
+        emit(AdapterState(true));
+    } else {
+        emit(AdapterState(false));
+    }
+});
   }
 }

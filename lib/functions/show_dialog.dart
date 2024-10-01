@@ -12,8 +12,9 @@ void showDisconnectDialog(BuildContext context) {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
+              BlocProvider.of<PageCubit>(context).goToMainPage();
             },
-            child: const Text('OK'),
+            child: const Text('OK', style: TextStyle(color: Colors.blue),),
           ),
         ],
       );
@@ -35,14 +36,44 @@ void showDisconnectConfirmation(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(color: Colors.blue),),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               onDisconnect();
             },
-            child: const Text('Disconnect'),
+            child: const Text('Disconnect', style: TextStyle(color: Colors.red),),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showLoadingPopup(BuildContext context) {
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(
+          child: LoadingAnimationWidget.prograssiveDots(
+              color: Colors.white, size: 70)));
+}
+
+void showFailedToConnectDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Device Disconnected'),
+        content: const Text(
+            'Failed to connect the Device please try again.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('OK', style: TextStyle(color: Colors.blue),),
           ),
         ],
       );

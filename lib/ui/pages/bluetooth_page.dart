@@ -9,15 +9,18 @@ class BluetoothPage extends StatefulWidget {
 
 class _BluetoothPageState extends State<BluetoothPage> {
   bool isScanning = false;
+  List<ScanResult> deviceScanResult = [];
 
   @override
   void initState() {
+    BlocProvider.of<BluetoothCubit>(context).streamAdapter();
     super.initState();
     // context.read<BluetoothCubit>().scanDevice();
   }
 
   @override
   void dispose() {
+    adapterSubscription.cancel();
     super.dispose();
   }
 
@@ -25,9 +28,39 @@ class _BluetoothPageState extends State<BluetoothPage> {
   Widget build(BuildContext context) {
     return BlocListener<BluetoothCubit, Bluetooth_State>(
       listener: (context, state) {
+        if (state is AdapterState){
+          setState(() {
+            if(!state.adapterON){
+              BlocProvider.of<PageCubit>(context).goToBluetoothOffScreen();
+            }
+          });
+        }
+
         if (state is BluetoothScaning) {
           setState(() {
             isScanning = state.isScanning;
+          });
+        }
+
+        if (state is BluetoothDeviceScanResults) {
+          setState(() {
+            deviceScanResult = state.scanResults!;
+          });
+        }
+
+        if (state is BluetoothLoading) {
+          showLoadingPopup(context);
+          Future.delayed(const Duration(seconds: 4));
+        }
+
+        if (state is Connected) {
+          setState(() {
+            if (state.status == true) {
+              Navigator.of(context).pop();
+              context.read<PageCubit>().goToMainPage();
+            } else {
+              showFailedToConnectDialog(context);
+            }
           });
         }
       },
@@ -46,7 +79,7 @@ class _BluetoothPageState extends State<BluetoothPage> {
                 },
               ),
             ),
-            body: DeviceList(state: state),
+            body: DeviceList(deviceScanResult: deviceScanResult),
             floatingActionButton: BluetoothScanButton(isScanning: isScanning),
           );
         },

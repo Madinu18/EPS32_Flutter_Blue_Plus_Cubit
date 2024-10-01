@@ -1,8 +1,7 @@
 part of 'bluetooth_cubit.dart';
 
 @immutable
-abstract class Bluetooth_State {
-}
+abstract class Bluetooth_State {}
 
 class BluetoothStateInitial extends Bluetooth_State {}
 
@@ -24,5 +23,20 @@ class BluetoothDeviceScanResults extends Bluetooth_State {
   List<Object> get props => [scanResults ?? []];
 }
 
+class Connected extends Bluetooth_State {
+  final bool status;
+
+  Connected(this.status);
+
+  List<Object> get props => [status];
+}
+
 class BluetoothDisconnectDialog extends Bluetooth_State {}
 
+class AdapterState extends Bluetooth_State {
+  final bool adapterON;
+
+  AdapterState(this.adapterON);
+  
+  List<Object>  get props => [adapterON];
+}
