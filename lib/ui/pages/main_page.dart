@@ -26,6 +26,10 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return BlocListener<BluetoothCubit, Bluetooth_State>(
       listener: (context, state) {
+        if (state is BluetoothReconect){
+          context.read<PageCubit>().goToMainPage();
+        }
+
         if (state is BluetoothDisconnectDialog) {
           connectedToDevice = false;
           connectedDevice = null;

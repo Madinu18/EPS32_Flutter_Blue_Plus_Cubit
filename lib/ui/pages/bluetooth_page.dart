@@ -15,12 +15,11 @@ class _BluetoothPageState extends State<BluetoothPage> {
   void initState() {
     BlocProvider.of<BluetoothCubit>(context).streamAdapter();
     super.initState();
-    // context.read<BluetoothCubit>().scanDevice();
   }
 
   @override
   void dispose() {
-    adapterSubscription.cancel();
+    adapterSubscription?.cancel();
     super.dispose();
   }
 
@@ -38,13 +37,13 @@ class _BluetoothPageState extends State<BluetoothPage> {
 
         if (state is BluetoothScaning) {
           setState(() {
-            isScanning = state.isScanning;
+            isScanning = state.scanning;
           });
         }
 
         if (state is BluetoothDeviceScanResults) {
           setState(() {
-            deviceScanResult = state.scanResults!;
+            deviceScanResult = state.results!;
           });
         }
 

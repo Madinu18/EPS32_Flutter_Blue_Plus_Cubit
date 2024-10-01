@@ -1,15 +1,13 @@
 part of 'pages.dart';
 
 class BluetoothOffScreen extends StatefulWidget {
-  const BluetoothOffScreen({super.key, this.adapterState});
-
-  final BluetoothAdapterState? adapterState;
+  const BluetoothOffScreen({super.key});
 
   @override
-  _BluetoothOffScreenState createState() => _BluetoothOffScreenState();
+  BluetoothOffScreenState createState() => BluetoothOffScreenState();
 }
 
-class _BluetoothOffScreenState extends State<BluetoothOffScreen> {
+class BluetoothOffScreenState extends State<BluetoothOffScreen> {
   StreamSubscription? adapterSubscription;
 
   @override

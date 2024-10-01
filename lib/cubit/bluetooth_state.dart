@@ -8,19 +8,19 @@ class BluetoothStateInitial extends Bluetooth_State {}
 class BluetoothLoading extends Bluetooth_State {}
 
 class BluetoothScaning extends Bluetooth_State {
-  final bool isScanning;
+  final bool scanning;
 
-  BluetoothScaning(this.isScanning);
+  BluetoothScaning(this.scanning);
 
-  List<Object> get props => [isScanning];
+  List<Object> get props => [scanning];
 }
 
 class BluetoothDeviceScanResults extends Bluetooth_State {
-  final List<ScanResult>? scanResults;
+  final List<ScanResult>? results;
 
-  BluetoothDeviceScanResults(this.scanResults);
+  BluetoothDeviceScanResults(this.results);
 
-  List<Object> get props => [scanResults ?? []];
+  List<Object> get props => [results ?? []];
 }
 
 class Connected extends Bluetooth_State {
@@ -40,3 +40,5 @@ class AdapterState extends Bluetooth_State {
   
   List<Object>  get props => [adapterON];
 }
+
+class BluetoothReconect extends Bluetooth_State{}

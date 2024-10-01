@@ -12,7 +12,6 @@ void showDisconnectDialog(BuildContext context) {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              BlocProvider.of<PageCubit>(context).goToMainPage();
             },
             child: const Text('OK', style: TextStyle(color: Colors.blue),),
           ),

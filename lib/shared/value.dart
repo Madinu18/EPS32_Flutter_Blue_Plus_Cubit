@@ -5,7 +5,8 @@ BluetoothDevice? connectedDevice;
 Stream<List<int>>? tempHumiValue;
 bool connectedToDevice = false;
 
-var adapterSubscription;
+StreamSubscription<BluetoothAdapterState>? adapterSubscription;
 
 //controllable variable
 const int scanTimeinSecond = 5;
+const int reconnectTime = 10;
